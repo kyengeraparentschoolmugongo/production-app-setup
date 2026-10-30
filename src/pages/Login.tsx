@@ -2,8 +2,8 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { Footer } from "@/components/layout/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 
-import classCrest from "@/assets/class-crest.png.asset.json";
-import schoolEntrance from "@/assets/school-entrance.jpg.asset.json";
+import { classCrest as classCrest } from "@/lib/images";
+import { schoolEntrance as schoolEntrance } from "@/lib/images";
 
 const schoolLogo = classCrest.url;
 

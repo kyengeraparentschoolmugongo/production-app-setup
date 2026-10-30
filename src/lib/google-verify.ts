@@ -1,4 +1,4 @@
-import { lovable } from "@/integrations/lovable";
+import { startGoogleSignIn } from "@/lib/google-oauth";
 
 export type GoogleIntent = "recovery-link" | "reset" | "change-password";
 export const GOOGLE_READY_KEY = "google-verified-intent";
@@ -9,10 +9,9 @@ export const GOOGLE_READY_KEY = "google-verified-intent";
  * callback page will resume the action.
  */
 export async function verifyWithGoogle(intent: GoogleIntent, hint?: string) {
-  const result = await lovable.auth.signInWithOAuth("google", {
-    redirect_uri: `${window.location.origin}/auth/google-callback?intent=${intent}`,
-    extraParams: { prompt: "select_account", ...(hint ? { login_hint: hint } : {}) },
+  const result = await startGoogleSignIn({
+    redirectTo: `${window.location.origin}/auth/google-callback?intent=${intent}`,
+    params: { prompt: "select_account", ...(hint ? { login_hint: hint } : {}) },
   });
-  if (result.error) throw result.error;
   return !result.redirected;
 }

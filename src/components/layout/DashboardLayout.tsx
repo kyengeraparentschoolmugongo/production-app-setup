@@ -1,4 +1,4 @@
-import classCrest from "@/assets/class-crest.png.asset.json";
+import { classCrest as classCrest } from "@/lib/images";
 import { ReactNode } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";

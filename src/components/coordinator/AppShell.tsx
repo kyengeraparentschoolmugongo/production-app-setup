@@ -1,7 +1,7 @@
 import { Link } from "@/lib/coordinator/navigation";
 import { useState, type ReactNode } from "react";
 import { ArrowLeft, Users, Vote, BarChart3, FileText, UserCircle2 } from "lucide-react";
-import crest from "@/assets/class-crest.png.asset.json";
+import { classCrest as crest } from "@/lib/images";
 import { SchoolAvatar } from "@/components/ui/school-avatar";
 import { usePageView, useUser } from "@/hooks/use-coordinator";
 import { useAuth } from "@/hooks/useAuth";

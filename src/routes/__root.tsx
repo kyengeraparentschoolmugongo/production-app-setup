@@ -17,6 +17,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { SchoolLoadingOverlay } from "@/components/SchoolLoadingOverlay";
+import { InstallAppPrompt } from "@/components/InstallAppPrompt";
 import NotFound from "@/pages/NotFound";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -69,6 +70,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "School portal for Kyengera Parents' School - Mugongo, Kyengera Mugongo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#0c63d9" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "KPS Mugongo" },
     ],
     links: [
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&display=swap" },
@@ -77,6 +81,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
   }),
   shellComponent: RootShell,
@@ -112,6 +118,7 @@ function RootComponent() {
           <ScrollToTop />
           <Outlet />
           <SchoolLoadingOverlay />
+          <InstallAppPrompt />
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

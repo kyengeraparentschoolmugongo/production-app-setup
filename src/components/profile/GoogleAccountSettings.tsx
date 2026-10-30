@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { lovable } from "@/integrations/lovable";
+import { startGoogleSignIn } from "@/lib/google-oauth";
 import { getGoogleAccountSettings, beginGoogleLink, finishGoogleLink, cancelGoogleLink, unlinkGoogleAccount, setStudentPortalPassword } from "@/lib/google.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,8 +31,7 @@ export function GoogleAccountSettings() {
         toast.success("Google account unlinked.");
       } else {
         await begin({ data: { password } });
-        const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth/google-callback?intent=link`, extraParams: { prompt: "select_account" } });
-        if (result.error) throw result.error;
+        const result = await startGoogleSignIn({ redirectTo: `${window.location.origin}/auth/google-callback?intent=link`, params: { prompt: "select_account" } });
         if (result.redirected) return;
         await finish();
         toast.success("Google account linked.");
