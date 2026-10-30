@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
-import classCrest from "@/assets/class-crest.png.asset.json";
+import { classCrest as classCrest } from "@/lib/images";
 
 /** A sibling of the outlet: loading never remounts the outgoing page. */
 export function SchoolLoadingOverlay() {

@@ -7,7 +7,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { format } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
-import classCrest from "@/assets/class-crest.png.asset.json";
+import { classCrest as classCrest } from "@/lib/images";
 import { school } from "@/lib/school";
 
 interface ApplicationData {
