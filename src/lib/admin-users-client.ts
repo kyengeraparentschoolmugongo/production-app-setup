@@ -29,6 +29,7 @@ class UserQuery implements PromiseLike<Reply> {
     }).catch(e => ({ data: null, error: { message: e instanceof Error ? e.message : "Could not complete this action." } })).then(ok, fail);
   }
 }
-export const adminUsers = {
-  from(table: Table | "classes" | "streams") { return table === "classes" || table === "streams" ? browserDb.from(table) : new UserQuery(table); },
-};
+function from(table: Table): UserQuery;
+function from(table: "classes" | "streams"): ReturnType<typeof browserDb.from>;
+function from(table: Table | "classes" | "streams") { return table === "classes" || table === "streams" ? browserDb.from(table) : new UserQuery(table); }
+export const adminUsers = { from };
