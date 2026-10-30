@@ -1,8 +1,8 @@
 import { Link } from "@/lib/coordinator/navigation";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { ArrowLeft, Users, Vote, BarChart3, FileText, UserCircle2 } from "lucide-react";
 import crest from "@/assets/class-crest.png.asset.json";
-import defaultAvatar from "@/assets/election-avatar.jpg.asset.json";
+import { SchoolAvatar } from "@/components/ui/school-avatar";
 import { usePageView, useUser } from "@/hooks/use-coordinator";
 
 export function Crest({ className = "h-10 w-10" }: { className?: string }) {
@@ -61,5 +61,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 }
 
 export function CandidatePhoto({ name, url, className = "" }: { name: string; url: string | null; className?: string }) {
-  return <img src={url || defaultAvatar.url} alt={name} loading="lazy" className={`object-cover ${className}`} />;
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  return url && failedUrl !== url ? <img src={url} alt={name} loading="lazy" onError={() => setFailedUrl(url)} className={`object-cover ${className}`} /> : <SchoolAvatar name={name} className={className} />;
 }

@@ -7,6 +7,7 @@ import { PersonalInfo } from "@/components/profile/PersonalInfoWithDatabase";
 import { PhotoDialog } from "@/components/ui/photo-dialog";
 import { Button } from "@/components/ui/button";
 import { RecoverySettings } from "@/components/profile/RecoverySettings";
+import { PersonalInterests } from "@/components/profile/PersonalInterests";
 
 export default function UserProfile() {
   const { userRole, userName, photoUrl, signOut, personalEmail, user } = useAuth();
@@ -47,7 +48,7 @@ export default function UserProfile() {
           personalEmail={personalEmail}
         />
 
-        {/* Danger Zone - Editable Security Settings */}
+        <PersonalInterests />
         <RecoverySettings />
       </div>
     </DashboardLayout>

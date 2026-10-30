@@ -4,8 +4,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const defaultAvatar = "https://raw.githubusercontent.com/Fresh-Teacher/glorious-gateway-65056-78561-35497/main/src/assets/default-avatar.png";
+import { SchoolAvatar } from "@/components/ui/school-avatar";
 
 interface PhotoDialogProps {
   photoUrl?: string | null;
@@ -18,19 +17,19 @@ export function PhotoDialog({ photoUrl, userName, size = "h-20 w-20" }: PhotoDia
     <Dialog>
       <DialogTrigger asChild>
         <Avatar className={`cursor-pointer hover:opacity-80 transition-opacity ${size}`}>
-          <AvatarImage src={photoUrl || defaultAvatar} alt="User avatar" />
+          <AvatarImage src={photoUrl ?? undefined} alt={`${userName}'s photo`} />
           <AvatarFallback>
-            <img src={defaultAvatar} alt="User avatar" className="h-full w-full object-cover" />
+            <SchoolAvatar />
           </AvatarFallback>
         </Avatar>
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <div className="flex flex-col items-center space-y-4">
-          <img
-            src={photoUrl || defaultAvatar}
+          {photoUrl ? <img
+            src={photoUrl}
             alt={`${userName}'s photo`}
             className="w-full h-auto max-h-96 object-contain rounded-lg"
-          />
+          /> : <SchoolAvatar className="h-56 w-56 rounded-full" />}
           <p className="text-lg font-medium text-center">{userName}</p>
         </div>
       </DialogContent>

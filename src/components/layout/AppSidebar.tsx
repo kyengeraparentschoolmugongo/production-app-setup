@@ -42,7 +42,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserRole } from "@/types/user";
 
-const defaultAvatar = "https://raw.githubusercontent.com/Fresh-Teacher/glorious-gateway-65056-78561-35497/main/src/assets/default-avatar.png";
+import { SchoolAvatar } from "@/components/ui/school-avatar";
 
 interface AppSidebarProps {
   userRole: UserRole;
@@ -102,6 +102,7 @@ export function AppSidebar({ userRole, userName, photoUrl, onLogout }: AppSideba
       case "admin":
         return [
           { title: "Dashboard", icon: Home, url: "/admin" },
+          { title: "All Users", icon: User, url: "/admin/users" },
           { title: "Students", icon: GraduationCap, url: "/admin/students" },
           { title: "Teachers", icon: Users, url: "/admin/teachers" },
           { title: "Classes", icon: BookOpen, url: "/admin/classes" },
@@ -135,9 +136,9 @@ export function AppSidebar({ userRole, userName, photoUrl, onLogout }: AppSideba
       <div className="sticky top-0 z-10 bg-background p-4 border-b">
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarImage src={photoUrl || defaultAvatar} />
+            <AvatarImage src={photoUrl ?? undefined} />
             <AvatarFallback>
-              <img src={defaultAvatar} alt="User avatar" className="h-full w-full object-cover" />
+              <SchoolAvatar />
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
