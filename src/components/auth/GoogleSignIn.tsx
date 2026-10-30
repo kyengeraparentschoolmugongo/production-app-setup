@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { lovable } from "@/integrations/lovable";
+import { startGoogleSignIn } from "@/lib/google-oauth";
 import { loginWithGoogle } from "@/lib/google.functions";
 import { cachePortalLogin } from "@/lib/portal-login";
 import { useNavigate } from "@/lib/router-compat";
@@ -34,8 +34,7 @@ export function GoogleSignIn() {
   const start = async () => {
     setBusy(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/auth/google-callback`, extraParams: { prompt: "select_account" } });
-      if (result.error) throw result.error;
+      const result = await startGoogleSignIn({ redirectTo: `${window.location.origin}/auth/google-callback`, params: { prompt: "select_account" } });
       if (result.redirected) return;
       await finish();
     } catch (error) { toast.error(error instanceof Error ? error.message : "Google sign-in failed."); }
