@@ -1,0 +1,9 @@
+[
+{"capability":"code","source":"github","outcome":"migrate","status":"verified","next_action":null},
+{"capability":"schema","source":"external database","outcome":"migrate","status":"verified","next_action":null},
+{"capability":"records","source":"external database","outcome":"migrate","status":"pending","next_action":"User exports students, teachers, admins, classes, streams, attendance and election tables as CSV from the old project"},
+{"capability":"auth identities","source":"portal passwords + Google","outcome":"migrate","status":"pending","next_action":"Imported with records; portal password hashes carry over with the student/teacher/admin rows"},
+{"capability":"uploaded files","source":"assets","outcome":"migrate","status":"verified","next_action":null},
+{"capability":"secrets","source":"PUPIL_SESSION_SECRET","outcome":"regenerated","status":"verified","next_action":null},
+{"capability":"edge function attendance-save","source":"supabase/functions","outcome":"keep","status":"pending","next_action":"Verify after data import"}
+]

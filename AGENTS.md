@@ -10,7 +10,7 @@
 <!-- LOVABLE:END -->
 
 - Pages import navigation from `@/lib/router-compat` (thin wrapper over TanStack Router) — kept the imported app's react-router style calls working without rewriting every page.
-- The app connects to its own existing external backend (src/integrations/supabase) — the owner chose to keep their current database.
+- The app runs on Lovable Cloud; legacy portal tables keep open anon policies because portal accounts are not Auth identities, while credential columns stay locked by column grants.
 - Router uses defaultSsr: false — the app depends on browser-only login state.
 - Page entrance animations mount inside page content (DashboardLayout main for dashboard pages), never around the root Outlet or keyed by location — pending navigation must not remount or reanimate outgoing pages.
 - Keep the shared loading overlay as a sibling of the root Outlet, driven by router pending and session-restoration state, so navigation never replaces or remounts page content just to show loading.
