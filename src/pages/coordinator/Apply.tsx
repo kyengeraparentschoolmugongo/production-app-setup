@@ -37,7 +37,7 @@ export default function ApplyPage() {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("electoral_applications").select("*").eq("user_id", user.id).maybeSingle().then(({ data }) => {
+    Promise.resolve(supabase.from("electoral_applications").select("*").eq("user_id", user.id).maybeSingle()).then(({ data }) => {
       if (data) { setExistingId(data.id); setLocked(data.status !== "pending"); setPhotos(data.manifesto_photos); }
       setF({ student_name: data?.student_name ?? "", class_name: data?.class_name ?? "", stream_name: data?.stream_name ?? "", age: data?.age ? String(data.age) : "", position: data?.position ?? "", experience: data?.experience ?? "", manifesto: data?.manifesto ?? "", photo_url: data?.photo_url ?? "", youtube_url: data?.youtube_url ?? "" });
     }).catch(() => toast.error("Your application could not be loaded."));
