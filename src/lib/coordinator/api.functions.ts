@@ -91,7 +91,17 @@ export const electionRequest = createServerFn({ method: "POST" })
         if (current.user_id !== id) throw new Error("You cannot edit another pupil's application.");
       }
       if (!commission && !canSubmitApplication(role, settings.applications_open, current?.status)) throw new Error("Applications are closed or your application has already been reviewed.");
-      const app = applicationSchema.parse(data.values);
+      let values = data.values;
+      if (role === "student") {
+        const { data: pupil } = await db.from("students").select("name,photo_url,class_id,stream_id").eq("id", id).single();
+        const [c, s] = await Promise.all([
+          pupil?.class_id ? db.from("classes").select("name").eq("id", pupil.class_id).maybeSingle() : Promise.resolve({ data: null }),
+          pupil?.stream_id ? db.from("streams").select("name").eq("id", pupil.stream_id).maybeSingle() : Promise.resolve({ data: null }),
+        ]);
+        if (!pupil || !c.data?.name || !s.data?.name) throw new Error("Ask the school administrator to assign your class and stream before applying.");
+        values = { ...values, student_name: pupil.name, photo_url: pupil.photo_url, class_name: c.data.name, stream_name: s.data.name };
+      }
+      const app = applicationSchema.parse(values);
       if (!app.student_name || !app.class_name || !app.position) throw new Error("Complete your candidate details.");
       // A pupil cannot use the name selector to impersonate another registered pupil.
       if (!commission && app.student_name.toLowerCase() !== account.name.toLowerCase()) throw new Error("Choose your own registered pupil name.");

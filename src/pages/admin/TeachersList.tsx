@@ -31,7 +31,7 @@ import {
   Mail
 } from "lucide-react";
 import { useNavigate } from "@/lib/router-compat";
-import { supabase } from "@/integrations/supabase/client";
+import { adminUsers as supabase } from "@/lib/admin-users-client";
 import { toast } from "sonner";
 import { generateTeachersListPDF } from "@/utils/pdfUtils";
 import { ProgressModal } from "@/components/ui/progress-modal";

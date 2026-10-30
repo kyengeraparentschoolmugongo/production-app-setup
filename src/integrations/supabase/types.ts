@@ -477,6 +477,45 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_interests: {
+        Row: {
+          account_type: string
+          best_colour: string
+          best_friend: string
+          cartoon: string
+          celebrity: string
+          favourite_dish: string
+          hobbies: string
+          other_interests: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_type: string
+          best_colour?: string
+          best_friend?: string
+          cartoon?: string
+          celebrity?: string
+          favourite_dish?: string
+          hobbies?: string
+          other_interests?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_type?: string
+          best_colour?: string
+          best_friend?: string
+          cartoon?: string
+          celebrity?: string
+          favourite_dish?: string
+          hobbies?: string
+          other_interests?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       streams: {
         Row: {
           class_id: string | null

@@ -3,7 +3,9 @@ import { ClosedCard } from "@/components/coordinator/Notice";
 import { Link, useNavigate } from "@/lib/coordinator/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Camera, Check } from "lucide-react";
+import { Check } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { getSchoolProfile } from "@/lib/profile.functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppShell, CandidatePhoto } from "@/components/coordinator/AppShell";
 import { supabase } from "@/lib/coordinator/client";
@@ -21,6 +23,7 @@ export default function ApplyPage() {
   const { data: settings } = useSettings();
   const nav = useNavigate();
   const qc = useQueryClient();
+  const readProfile = useServerFn(getSchoolProfile);
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
   const [existingId, setExistingId] = useState<string | null>(null);
@@ -31,13 +34,10 @@ export default function ApplyPage() {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("electoral_applications").select("*").eq("user_id", user.id).maybeSingle().then(({ data }) => {
-      if (!data) return;
-      setExistingId(data.id);
-      setLocked(data.status !== "pending");
-      setF({ student_name: data.student_name, class_name: data.class_name, stream_name: data.stream_name ?? "", age: data.age ? String(data.age) : "", position: data.position, experience: data.experience ?? "", manifesto: data.manifesto, photo_url: data.photo_url ?? "", youtube_url: data.youtube_url ?? "" });
-      setPhotos(data.manifesto_photos);
-    });
+    Promise.all([readProfile(), supabase.from("electoral_applications").select("*").eq("user_id", user.id).maybeSingle()]).then(([profile, { data }]) => {
+      if (data) { setExistingId(data.id); setLocked(data.status !== "pending"); setPhotos(data.manifesto_photos); }
+      setF({ student_name: profile.name, class_name: profile.className === "Not assigned" ? "" : profile.className, stream_name: profile.streamName === "Not assigned" ? "" : profile.streamName, age: data?.age ? String(data.age) : "", position: data?.position ?? "", experience: data?.experience ?? "", manifesto: data?.manifesto ?? "", photo_url: profile.photoUrl ?? "", youtube_url: data?.youtube_url ?? "" });
+    }).catch(() => toast.error("Your school details could not be loaded."));
   }, [user]);
 
   if (settings && !settings.applications_open) {
@@ -52,13 +52,13 @@ export default function ApplyPage() {
 
   const positions = positionsForClass(f.class_name);
   const canNext = [
-    PUPILS.includes(f.student_name) && f.class_name && f.stream_name,
+    f.student_name && f.class_name && f.stream_name,
     f.position,
     true,
   ][step];
 
   async function submit() {
-    if (!user || !PUPILS.includes(f.student_name) || !f.stream_name || !positions.some(p => p.value === f.position)) return;
+    if (!user || !f.student_name || !f.stream_name || !positions.some(p => p.value === f.position)) return;
     setBusy(true);
     const { data: verified, error: authError } = await supabase.auth.getUser();
     if (authError || !verified.user) { setBusy(false); toast.error("Please sign in again before submitting your application."); return; }
@@ -93,20 +93,18 @@ export default function ApplyPage() {
       <div className="mt-6 space-y-4 rounded-3xl border-2 border-primary/50 bg-card p-5">
         {step === 0 && (
           <>
-            <label className="mx-auto flex w-fit cursor-pointer flex-col items-center gap-2">
-              <div className="relative">
+            <div className="mx-auto flex w-fit flex-col items-center gap-2">
+              <div>
                 <CandidatePhoto name={f.student_name || "?"} url={f.photo_url || null} className="h-28 w-28 rounded-full ring-2 ring-primary" />
-                <span className="absolute bottom-0 right-0 rounded-full bg-gradient-primary p-2 text-primary-foreground"><Camera className="h-4 w-4" /></span>
               </div>
-              <span className="text-xs text-muted-foreground">Add your photo</span>
-              <input type="file" accept="image/*" className="hidden" onChange={async (e) => { const file = e.target.files?.[0]; if (file) set("photo_url", await fileToSmallDataUrl(file)); }} />
-            </label>
-            <select aria-label="Pupil name" className={input} disabled value={f.student_name} onChange={(e) => set("student_name", e.target.value)}><option value="">Select pupil name</option>{PUPILS.map(name => <option key={name}>{name}</option>)}</select>
+              <span className="text-xs text-muted-foreground">School-managed photo</span>
+            </div>
+            <input aria-label="Pupil name" className={input} disabled value={f.student_name} />
             <div className="grid grid-cols-2 gap-3">
-              <select aria-label="Class" className={input} value={f.class_name} onChange={(e) => { set("class_name", e.target.value); set("position", ""); }}>
+              <select aria-label="Class" className={input} disabled value={f.class_name}>
                 <option value="">Class</option>{CLASSES.map((c) => <option key={c}>{c}</option>)}
               </select>
-              <select aria-label="Stream" className={input} value={f.stream_name} onChange={(e) => set("stream_name", e.target.value)}>
+              <select aria-label="Stream" className={input} disabled value={f.stream_name}>
                 <option value="">Stream</option>{STREAMS.map((s) => <option key={s}>{s}</option>)}
               </select>
               <select aria-label="Age" className={input} value={f.age} onChange={(e) => set("age", e.target.value)}><option value="">Age (optional)</option>{AGES.map(age => <option key={age}>{age}</option>)}</select>

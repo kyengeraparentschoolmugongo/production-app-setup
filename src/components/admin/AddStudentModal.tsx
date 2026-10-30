@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { adminUsers as supabase } from "@/lib/admin-users-client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { generateSecurePassword } from "@/utils/emailGenerator";
@@ -74,24 +74,11 @@ export function AddStudentModal({
   const onSubmit = async (data: StudentFormData) => {
     setLoading(true);
     try {
-      // Generate a 4-digit password with leading zeros (0001-9999)
-      const randomNum = Math.floor(Math.random() * 10000);
-      const defaultPassword = randomNum.toString().padStart(4, '0');
-      const studentId = crypto.randomUUID();
-      const passwordHash = await hash(defaultPassword, 10);
-
-      const { error } = await supabase.from("students").insert([
-        {
-          id: studentId,
-          name: data.name,
-          email: data.email,
-          class_id: data.class_id,
-          stream_id: data.stream_id || null,
-          photo_url: data.photo_url || null,
-          password_hash: passwordHash,
-          is_verified: false,
-        },
-      ]);
+      const defaultPassword = "6667";
+      const { error } = await supabase.from("students").insert({
+        name: data.name, email: data.email, class_id: data.class_id,
+        stream_id: data.stream_id || null, photo_url: data.photo_url || null,
+      });
 
       if (error) throw error;
 

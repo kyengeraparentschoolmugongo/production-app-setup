@@ -3,6 +3,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { RecoverySettings } from "@/components/profile/RecoverySettings";
 import { useAuth } from "@/hooks/useAuth";
+import { PersonalInterests } from "@/components/profile/PersonalInterests";
 
 export const Route = createFileRoute("/account-settings")({
   head: () => ({ meta: [
@@ -20,6 +21,6 @@ function Page() { return <ProtectedRoute><AccountSettings /></ProtectedRoute>; }
 function AccountSettings() {
   const { userRole, userName, photoUrl, signOut } = useAuth();
     return <DashboardLayout userRole={userRole as any} userName={userName} photoUrl={photoUrl} onLogout={signOut}>
-    <div className="mx-auto max-w-3xl space-y-6"><div><h1 className="text-3xl font-bold">Account settings</h1><p className="text-muted-foreground">Manage how you sign in to your school portal account.</p></div><RecoverySettings /></div>
+    <div className="mx-auto max-w-3xl space-y-6"><div><h1 className="text-3xl font-bold">Account settings</h1></div><PersonalInterests /><RecoverySettings /></div>
   </DashboardLayout>;
 }
