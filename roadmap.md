@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Restore election-only photo camera/gallery selection and dropdown choices; verify saved application details do not change the school profile.
+- [x] Restore election-only photo camera/gallery selection and dropdown choices; verified gallery upload, selected name/P3/Violet persistence and unchanged profile, with 36 tests passing. Native camera capture depends on device support.
 - [x] Lock school identity edits to administrators, save personal interests in settings/profile, and use blue default avatars; verified pupil persistence, admin assignment save, blocked pupil/direct browser writes, phone layout, and 22 rules tests.
 
 - [ ] Replace the voting subsystem with the uploaded repository, preserve its voting UI with school-blue colours, integrate existing portal accounts, and verify voting and administration.

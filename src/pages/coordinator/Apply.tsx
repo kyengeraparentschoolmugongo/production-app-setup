@@ -7,8 +7,6 @@ import { Camera, ImagePlus, Loader2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { useServerFn } from "@tanstack/react-start";
-import { getSchoolProfile } from "@/lib/profile.functions";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppShell, CandidatePhoto } from "@/components/coordinator/AppShell";
 import { supabase } from "@/lib/coordinator/client";
@@ -22,11 +20,10 @@ import { Button } from "@/components/ui/button";
 const steps = ["Details", "Position", "Review"];
 
 export default function ApplyPage() {
-  const { user, ready, name } = useUser();
+  const { user, ready } = useUser();
   const { data: settings } = useSettings();
   const nav = useNavigate();
   const qc = useQueryClient();
-  const readProfile = useServerFn(getSchoolProfile);
   const cameraInput = useRef<HTMLInputElement>(null);
   const galleryInput = useRef<HTMLInputElement>(null);
   const [photoBusy, setPhotoBusy] = useState(false);
@@ -40,10 +37,10 @@ export default function ApplyPage() {
 
   useEffect(() => {
     if (!user) return;
-    Promise.all([readProfile(), supabase.from("electoral_applications").select("*").eq("user_id", user.id).maybeSingle()]).then(([profile, { data }]) => {
+    supabase.from("electoral_applications").select("*").eq("user_id", user.id).maybeSingle().then(({ data }) => {
       if (data) { setExistingId(data.id); setLocked(data.status !== "pending"); setPhotos(data.manifesto_photos); }
       setF({ student_name: data?.student_name ?? "", class_name: data?.class_name ?? "", stream_name: data?.stream_name ?? "", age: data?.age ? String(data.age) : "", position: data?.position ?? "", experience: data?.experience ?? "", manifesto: data?.manifesto ?? "", photo_url: data?.photo_url ?? "", youtube_url: data?.youtube_url ?? "" });
-    }).catch(() => toast.error("Your school details could not be loaded."));
+    }).catch(() => toast.error("Your application could not be loaded."));
   }, [user]);
 
   if (settings && !settings.applications_open) {
