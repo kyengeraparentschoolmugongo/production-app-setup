@@ -38,7 +38,7 @@ interface UserVerificationData {
   personal_email?: string;
 }
 
-export function PersonalInfo({ userName, userRole, userEmail, personalEmail }: PersonalInfoProps) {
+export function PersonalInfo({ userName, userRole, userEmail, personalEmail, userId }: PersonalInfoProps) {
   const { user } = useAuth();
   const [studentData, setStudentData] = useState<StudentData>({});
   const [teacherData, setTeacherData] = useState<TeacherData>({});

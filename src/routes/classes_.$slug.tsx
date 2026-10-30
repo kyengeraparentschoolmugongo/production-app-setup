@@ -39,7 +39,7 @@ function ClassPage() {
               </>
             ) : (
               <>
-                <p>No information is currently available for this class. Only Primary Five (Stream: Orange) records have been published at this time.</p>
+                <p>No information is currently available for this class. Only Primary Five (Stream: Orange) records have been published so far. Records for this class will be available soon.</p>
                 <Button asChild variant="outline"><Link to={`/classes/${activeStream.classSlug}`}>View P.5 Orange</Link></Button>
               </>
             )}
