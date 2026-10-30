@@ -14,13 +14,643 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admins: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_verified: boolean
+          name: string
+          password_hash: string | null
+          personal_email: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_verified?: boolean
+          name: string
+          password_hash?: string | null
+          personal_email?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_verified?: boolean
+          name?: string
+          password_hash?: string | null
+          personal_email?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      attendance_records: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          marked_by: string | null
+          status: string
+          stream_id: string | null
+          student_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          marked_by?: string | null
+          status?: string
+          stream_id?: string | null
+          student_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          marked_by?: string | null
+          status?: string
+          stream_id?: string | null
+          student_id?: string | null
+        }
+        Relationships: []
+      }
+      classes: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      coordinator_applications: {
+        Row: {
+          age: number | null
+          class_name: string
+          created_at: string
+          experience: string | null
+          id: string
+          manifesto: string
+          manifesto_photos: string[]
+          photo_url: string | null
+          position: string
+          status: string
+          stream_name: string | null
+          student_name: string
+          updated_at: string
+          user_id: string | null
+          view_count: number
+          youtube_url: string | null
+        }
+        Insert: {
+          age?: number | null
+          class_name: string
+          created_at?: string
+          experience?: string | null
+          id?: string
+          manifesto?: string
+          manifesto_photos?: string[]
+          photo_url?: string | null
+          position: string
+          status?: string
+          stream_name?: string | null
+          student_name: string
+          updated_at?: string
+          user_id?: string | null
+          view_count?: number
+          youtube_url?: string | null
+        }
+        Update: {
+          age?: number | null
+          class_name?: string
+          created_at?: string
+          experience?: string | null
+          id?: string
+          manifesto?: string
+          manifesto_photos?: string[]
+          photo_url?: string | null
+          position?: string
+          status?: string
+          stream_name?: string | null
+          student_name?: string
+          updated_at?: string
+          user_id?: string | null
+          view_count?: number
+          youtube_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coordinator_applications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coordinator_commission_roles: {
+        Row: {
+          created_at: string
+          granted_by: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coordinator_commission_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coordinator_settings: {
+        Row: {
+          announcement: string | null
+          applications_open: boolean
+          id: number
+          page_views: number
+          results_public: boolean
+          updated_at: string
+          voting_ends_at: string | null
+          voting_open: boolean
+          voting_starts_at: string | null
+        }
+        Insert: {
+          announcement?: string | null
+          applications_open?: boolean
+          id?: number
+          page_views?: number
+          results_public?: boolean
+          updated_at?: string
+          voting_ends_at?: string | null
+          voting_open?: boolean
+          voting_starts_at?: string | null
+        }
+        Update: {
+          announcement?: string | null
+          applications_open?: boolean
+          id?: number
+          page_views?: number
+          results_public?: boolean
+          updated_at?: string
+          voting_ends_at?: string | null
+          voting_open?: boolean
+          voting_starts_at?: string | null
+        }
+        Relationships: []
+      }
+      coordinator_votes: {
+        Row: {
+          application_id: string
+          created_at: string
+          id: string
+          position: string
+          voter_id: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          id?: string
+          position: string
+          voter_id: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          id?: string
+          position?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coordinator_votes_application_id_position_fkey"
+            columns: ["application_id", "position"]
+            isOneToOne: false
+            referencedRelation: "coordinator_applications"
+            referencedColumns: ["id", "position"]
+          },
+          {
+            foreignKeyName: "coordinator_votes_voter_id_fkey"
+            columns: ["voter_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      electoral_applications: {
+        Row: {
+          age: number | null
+          class_name: string | null
+          class_teacher_name: string | null
+          class_teacher_tel: string | null
+          created_at: string
+          experience: string | null
+          id: string
+          parent_name: string | null
+          parent_tel: string | null
+          position: string | null
+          qualifications: string | null
+          sex: string | null
+          status: string
+          stream_name: string | null
+          student_email: string | null
+          student_id: string | null
+          student_name: string | null
+          student_photo: string | null
+          submitted_at: string | null
+          why_apply: string | null
+        }
+        Insert: {
+          age?: number | null
+          class_name?: string | null
+          class_teacher_name?: string | null
+          class_teacher_tel?: string | null
+          created_at?: string
+          experience?: string | null
+          id?: string
+          parent_name?: string | null
+          parent_tel?: string | null
+          position?: string | null
+          qualifications?: string | null
+          sex?: string | null
+          status?: string
+          stream_name?: string | null
+          student_email?: string | null
+          student_id?: string | null
+          student_name?: string | null
+          student_photo?: string | null
+          submitted_at?: string | null
+          why_apply?: string | null
+        }
+        Update: {
+          age?: number | null
+          class_name?: string | null
+          class_teacher_name?: string | null
+          class_teacher_tel?: string | null
+          created_at?: string
+          experience?: string | null
+          id?: string
+          parent_name?: string | null
+          parent_tel?: string | null
+          position?: string | null
+          qualifications?: string | null
+          sex?: string | null
+          status?: string
+          stream_name?: string | null
+          student_email?: string | null
+          student_id?: string | null
+          student_name?: string | null
+          student_photo?: string | null
+          submitted_at?: string | null
+          why_apply?: string | null
+        }
+        Relationships: []
+      }
+      electoral_rows: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          title?: string
+        }
+        Relationships: []
+      }
+      electoral_votes: {
+        Row: {
+          browser: string | null
+          candidate_id: string | null
+          candidate_name: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          ip_address: string | null
+          language: string | null
+          latitude: string | null
+          location_accuracy: string | null
+          longitude: string | null
+          os: string | null
+          position: string | null
+          screen_resolution: string | null
+          timezone: string | null
+          vote_status: string | null
+          voted_at: string
+          voter_id: string | null
+          voter_name: string | null
+        }
+        Insert: {
+          browser?: string | null
+          candidate_id?: string | null
+          candidate_name?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          language?: string | null
+          latitude?: string | null
+          location_accuracy?: string | null
+          longitude?: string | null
+          os?: string | null
+          position?: string | null
+          screen_resolution?: string | null
+          timezone?: string | null
+          vote_status?: string | null
+          voted_at?: string
+          voter_id?: string | null
+          voter_name?: string | null
+        }
+        Update: {
+          browser?: string | null
+          candidate_id?: string | null
+          candidate_name?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          language?: string | null
+          latitude?: string | null
+          location_accuracy?: string | null
+          longitude?: string | null
+          os?: string | null
+          position?: string | null
+          screen_resolution?: string | null
+          timezone?: string | null
+          vote_status?: string | null
+          voted_at?: string
+          voter_id?: string | null
+          voter_name?: string | null
+        }
+        Relationships: []
+      }
+      physical_votes: {
+        Row: {
+          added_at: string | null
+          candidate_id: string | null
+          candidate_name: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          position: string | null
+          votes_count: number
+        }
+        Insert: {
+          added_at?: string | null
+          candidate_id?: string | null
+          candidate_name?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          position?: string | null
+          votes_count?: number
+        }
+        Update: {
+          added_at?: string | null
+          candidate_id?: string | null
+          candidate_name?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          position?: string | null
+          votes_count?: number
+        }
+        Relationships: []
+      }
+      portal_auth_attempts: {
+        Row: {
+          attempt_key: string
+          attempts: number
+          started_at: string
+        }
+        Insert: {
+          attempt_key: string
+          attempts?: number
+          started_at?: string
+        }
+        Update: {
+          attempt_key?: string
+          attempts?: number
+          started_at?: string
+        }
+        Relationships: []
+      }
+      streams: {
+        Row: {
+          class_id: string | null
+          created_at: string
+          id: string
+          name: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          class_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      student_google_accounts: {
+        Row: {
+          auth_user_id: string
+          google_email: string
+          linked_at: string
+          student_id: string
+        }
+        Insert: {
+          auth_user_id: string
+          google_email: string
+          linked_at?: string
+          student_id: string
+        }
+        Update: {
+          auth_user_id?: string
+          google_email?: string
+          linked_at?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_google_accounts_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: true
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          class_id: string | null
+          created_at: string
+          default_password: string | null
+          email: string
+          gender: string | null
+          id: string
+          is_verified: boolean
+          name: string
+          password_hash: string
+          personal_email: string | null
+          photo_url: string | null
+          stream_id: string | null
+        }
+        Insert: {
+          class_id?: string | null
+          created_at?: string
+          default_password?: string | null
+          email: string
+          gender?: string | null
+          id?: string
+          is_verified?: boolean
+          name: string
+          password_hash: string
+          personal_email?: string | null
+          photo_url?: string | null
+          stream_id?: string | null
+        }
+        Update: {
+          class_id?: string | null
+          created_at?: string
+          default_password?: string | null
+          email?: string
+          gender?: string | null
+          id?: string
+          is_verified?: boolean
+          name?: string
+          password_hash?: string
+          personal_email?: string | null
+          photo_url?: string | null
+          stream_id?: string | null
+        }
+        Relationships: []
+      }
+      teachers: {
+        Row: {
+          classesTaught: string | null
+          contactNumber: number | null
+          created_at: string
+          default_password: number | null
+          email: string | null
+          id: string
+          is_verified: boolean
+          name: string
+          nationality: string | null
+          password_hash: string | null
+          personal_email: string | null
+          photo_url: string | null
+          sex: string | null
+          subjectsTaught: string | null
+          updated_at: string
+        }
+        Insert: {
+          classesTaught?: string | null
+          contactNumber?: number | null
+          created_at?: string
+          default_password?: number | null
+          email?: string | null
+          id?: string
+          is_verified?: boolean
+          name: string
+          nationality?: string | null
+          password_hash?: string | null
+          personal_email?: string | null
+          photo_url?: string | null
+          sex?: string | null
+          subjectsTaught?: string | null
+          updated_at?: string
+        }
+        Update: {
+          classesTaught?: string | null
+          contactNumber?: number | null
+          created_at?: string
+          default_password?: number | null
+          email?: string | null
+          id?: string
+          is_verified?: boolean
+          name?: string
+          nationality?: string | null
+          password_hash?: string | null
+          personal_email?: string | null
+          photo_url?: string | null
+          sex?: string | null
+          subjectsTaught?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      connect_student_google: {
+        Args: {
+          p_auth_user_id: string
+          p_email: string
+          p_name: string
+          p_student_id?: string
+        }
+        Returns: string
+      }
+      consume_portal_auth_attempt: { Args: { p_key: string }; Returns: boolean }
+      coordinator_record_view: {
+        Args: { _candidate?: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
