@@ -1,4 +1,4 @@
-export interface GoogleIdentity { id: string; email: string; name: string }
+export interface GoogleIdentity { id: string; email: string; name: string; photoUrl?: string | null }
 export interface PortalStudent { id: string; name: string; email: string; password_hash: string }
 export interface GoogleAccountRepository {
   findLinkedStudent: (authId: string) => Promise<PortalStudent | null>;

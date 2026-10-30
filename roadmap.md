@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Add compressed camera/gallery profile photos, verified Google default photos, and corner-avatar profile navigation; tested 15.9MB to 149KB/640px, storage persistence, profile navigation in school/election pages, and 27 rules tests. Live Google consent and device camera remain interactive checks.
 - [x] Restore election-only photo camera/gallery selection and dropdown choices; verified gallery upload, selected name/P3/Violet persistence and unchanged profile, with 36 tests passing. Native camera capture depends on device support.
 - [x] Lock school identity edits to administrators, save personal interests in settings/profile, and use blue default avatars; verified pupil persistence, admin assignment save, blocked pupil/direct browser writes, phone layout, and 22 rules tests.
 

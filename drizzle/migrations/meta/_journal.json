@@ -15,6 +15,13 @@
       "when": 1793339454656,
       "tag": "0001_private_personal_interests_and_admin_identity",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793340887880,
+      "tag": "0002_admin_profile_photo",
+      "breakpoints": true
     }
   ]
 }

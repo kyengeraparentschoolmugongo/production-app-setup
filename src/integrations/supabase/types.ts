@@ -23,6 +23,7 @@ export type Database = {
           name: string
           password_hash: string | null
           personal_email: string | null
+          photo_url: string | null
           updated_at: string
         }
         Insert: {
@@ -33,6 +34,7 @@ export type Database = {
           name: string
           password_hash?: string | null
           personal_email?: string | null
+          photo_url?: string | null
           updated_at?: string
         }
         Update: {
@@ -43,6 +45,7 @@ export type Database = {
           name?: string
           password_hash?: string | null
           personal_email?: string | null
+          photo_url?: string | null
           updated_at?: string
         }
         Relationships: []

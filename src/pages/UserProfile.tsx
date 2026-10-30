@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { useNavigate } from "@/lib/router-compat";
 import { PersonalInfo } from "@/components/profile/PersonalInfoWithDatabase";
-import { PhotoDialog } from "@/components/ui/photo-dialog";
+import { ProfilePhotoEditor } from "@/components/profile/ProfilePhotoEditor";
 import { Button } from "@/components/ui/button";
 import { RecoverySettings } from "@/components/profile/RecoverySettings";
 import { PersonalInterests } from "@/components/profile/PersonalInterests";
@@ -30,9 +30,9 @@ export default function UserProfile() {
         <Card>
           <CardHeader>
             <div className="flex items-center space-x-4">
-              <PhotoDialog photoUrl={photoUrl} userName={userName} />
-              <div>
-                <CardTitle className="text-2xl">{userName}</CardTitle>
+              <ProfilePhotoEditor />
+              <div className="min-w-0">
+                <CardTitle className="break-words text-2xl">{userName}</CardTitle>
                 <CardDescription className="capitalize">{userRole} Account</CardDescription>
               </div>
             </div>

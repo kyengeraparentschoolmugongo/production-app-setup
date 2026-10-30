@@ -8,7 +8,7 @@ const exact = (v: string) => v.trim().toLowerCase().replace(/[\\%_]/g, "\\$&");
 
 async function findBy(column: "email" | "personal_email" | "id", value: string, roles = ROLES): Promise<PortalAccount | null> {
   for (const role of roles) {
-    const cols = role === "admin" ? "id,name,email,personal_email,password_hash,is_verified" : "id,name,email,personal_email,password_hash,is_verified,photo_url";
+    const cols = "id,name,email,personal_email,password_hash,is_verified,photo_url";
     const q = (supabaseAdmin.from(TABLES[role]) as any).select(cols);
     const { data, error } = await (column === "id" ? q.eq("id", value) : q.ilike(column, exact(value))).limit(1).maybeSingle();
     if (error) throw new Error("Account lookup unavailable.");
