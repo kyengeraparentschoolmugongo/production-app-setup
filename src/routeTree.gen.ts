@@ -39,6 +39,7 @@ import { Route as AdminStreamsRouteImport } from './routes/admin.streams'
 import { Route as AdminStudentsRouteImport } from './routes/admin.students'
 import { Route as AdminTeachersRouteImport } from './routes/admin.teachers'
 import { Route as AdminTimetableRouteImport } from './routes/admin.timetable'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AuthGoogleCallbackRouteImport } from './routes/auth.google-callback'
 import { Route as ClassesSlugRouteImport } from './routes/classes_.$slug'
 import { Route as StudentIndexRouteImport } from './routes/student.index'
@@ -243,6 +244,11 @@ const AdminTeachersRoute = AdminTeachersRouteImport.update({
 const AdminTimetableRoute = AdminTimetableRouteImport.update({
   id: '/admin/timetable',
   path: '/admin/timetable',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthGoogleCallbackRoute = AuthGoogleCallbackRouteImport.update({
@@ -562,6 +568,7 @@ export interface FileRoutesByFullPath {
   '/admin/students': typeof AdminStudentsRoute
   '/admin/teachers': typeof AdminTeachersRoute
   '/admin/timetable': typeof AdminTimetableRoute
+  '/admin/users': typeof AdminUsersRoute
   '/auth/google-callback': typeof AuthGoogleCallbackRoute
   '/classes/$slug': typeof ClassesSlugRoute
   '/student/assignments': typeof StudentAssignmentsRoute
@@ -649,6 +656,7 @@ export interface FileRoutesByTo {
   '/admin/students': typeof AdminStudentsRoute
   '/admin/teachers': typeof AdminTeachersRoute
   '/admin/timetable': typeof AdminTimetableRoute
+  '/admin/users': typeof AdminUsersRoute
   '/auth/google-callback': typeof AuthGoogleCallbackRoute
   '/classes/$slug': typeof ClassesSlugRoute
   '/student/assignments': typeof StudentAssignmentsRoute
@@ -737,6 +745,7 @@ export interface FileRoutesById {
   '/admin/students': typeof AdminStudentsRoute
   '/admin/teachers': typeof AdminTeachersRoute
   '/admin/timetable': typeof AdminTimetableRoute
+  '/admin/users': typeof AdminUsersRoute
   '/auth/google-callback': typeof AuthGoogleCallbackRoute
   '/classes_/$slug': typeof ClassesSlugRoute
   '/student/assignments': typeof StudentAssignmentsRoute
@@ -826,6 +835,7 @@ export interface FileRouteTypes {
     | '/admin/students'
     | '/admin/teachers'
     | '/admin/timetable'
+    | '/admin/users'
     | '/auth/google-callback'
     | '/classes/$slug'
     | '/student/assignments'
@@ -913,6 +923,7 @@ export interface FileRouteTypes {
     | '/admin/students'
     | '/admin/teachers'
     | '/admin/timetable'
+    | '/admin/users'
     | '/auth/google-callback'
     | '/classes/$slug'
     | '/student/assignments'
@@ -1000,6 +1011,7 @@ export interface FileRouteTypes {
     | '/admin/students'
     | '/admin/teachers'
     | '/admin/timetable'
+    | '/admin/users'
     | '/auth/google-callback'
     | '/classes_/$slug'
     | '/student/assignments'
@@ -1088,6 +1100,7 @@ export interface RootRouteChildren {
   AdminStudentsRoute: typeof AdminStudentsRoute
   AdminTeachersRoute: typeof AdminTeachersRoute
   AdminTimetableRoute: typeof AdminTimetableRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AuthGoogleCallbackRoute: typeof AuthGoogleCallbackRoute
   ClassesSlugRoute: typeof ClassesSlugRoute
   StudentAssignmentsRoute: typeof StudentAssignmentsRoute
@@ -1356,6 +1369,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/timetable'
       fullPath: '/admin/timetable'
       preLoaderRoute: typeof AdminTimetableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/google-callback': {
@@ -1776,6 +1796,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminStudentsRoute: AdminStudentsRoute,
   AdminTeachersRoute: AdminTeachersRoute,
   AdminTimetableRoute: AdminTimetableRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AuthGoogleCallbackRoute: AuthGoogleCallbackRoute,
   ClassesSlugRoute: ClassesSlugRoute,
   StudentAssignmentsRoute: StudentAssignmentsRoute,
