@@ -29,7 +29,7 @@ export function GoogleSignIn() {
     setPassword("");
     setMatchingEmail(null);
     toast.success(`Welcome, ${result.name}!`);
-    navigate("/student", { replace: true });
+    navigate(`/${result.role}`, { replace: true });
   };
   const start = async () => {
     setBusy(true);

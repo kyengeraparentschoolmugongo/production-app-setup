@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { GoogleAccountSettings } from "@/components/profile/GoogleAccountSettings";
+import { RecoverySettings } from "@/components/profile/RecoverySettings";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "@/lib/router-compat";
 
@@ -20,8 +20,7 @@ export const Route = createFileRoute("/account-settings")({
 function Page() { return <ProtectedRoute><AccountSettings /></ProtectedRoute>; }
 function AccountSettings() {
   const { userRole, userName, photoUrl, signOut } = useAuth();
-  if (userRole !== "student") return <Navigate to={`/${userRole ?? "login"}`} replace />;
-  return <DashboardLayout userRole="student" userName={userName} photoUrl={photoUrl} onLogout={signOut}>
-    <div className="mx-auto max-w-3xl space-y-6"><div><h1 className="text-3xl font-bold">Account settings</h1><p className="text-muted-foreground">Manage how you sign in to your student portal account.</p></div><GoogleAccountSettings /></div>
+    return <DashboardLayout userRole={userRole as any} userName={userName} photoUrl={photoUrl} onLogout={signOut}>
+    <div className="mx-auto max-w-3xl space-y-6"><div><h1 className="text-3xl font-bold">Account settings</h1><p className="text-muted-foreground">Manage how you sign in to your school portal account.</p></div><RecoverySettings /></div>
   </DashboardLayout>;
 }

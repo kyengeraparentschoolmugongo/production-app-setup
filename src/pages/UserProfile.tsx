@@ -7,7 +7,7 @@ import { PersonalInfo } from "@/components/profile/PersonalInfoWithDatabase";
 import { DangerZone } from "@/components/profile/DangerZone";
 import { PhotoDialog } from "@/components/ui/photo-dialog";
 import { Button } from "@/components/ui/button";
-import { GoogleAccountSettings } from "@/components/profile/GoogleAccountSettings";
+import { RecoverySettings } from "@/components/profile/RecoverySettings";
 
 export default function UserProfile() {
   const { userRole, userName, photoUrl, signOut, personalEmail, user } = useAuth();
@@ -48,7 +48,8 @@ export default function UserProfile() {
         />
 
         {/* Danger Zone - Editable Security Settings */}
-        {userRole === "student" ? <><Button variant="outline" onClick={() => navigate("/account-settings")}>Account settings</Button><GoogleAccountSettings /></> : <DangerZone 
+        <RecoverySettings />
+        {userRole !== "student" && <DangerZone 
           personalEmail={personalEmail}
           userId={user?.id}
           userRole={userRole}
