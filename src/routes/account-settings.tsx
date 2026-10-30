@@ -3,7 +3,6 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { RecoverySettings } from "@/components/profile/RecoverySettings";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "@/lib/router-compat";
 
 export const Route = createFileRoute("/account-settings")({
   head: () => ({ meta: [
