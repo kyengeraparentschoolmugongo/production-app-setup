@@ -43,6 +43,7 @@ export default function UserProfile() {
           userName={userName}
           userRole={userRole}
           userEmail={user?.email}
+          userId={user?.id}
           personalEmail={personalEmail}
         />
 
