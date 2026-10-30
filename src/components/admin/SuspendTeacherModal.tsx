@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
+import { adminUsers as supabase } from "@/lib/admin-users-client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 

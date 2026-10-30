@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { adminUsers as supabase } from "@/lib/admin-users-client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 

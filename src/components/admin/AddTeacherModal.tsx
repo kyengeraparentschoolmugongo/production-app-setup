@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { adminUsers as supabase } from "@/lib/admin-users-client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { generateSchoolEmail } from "@/utils/emailGenerator";
@@ -67,39 +67,14 @@ export function AddTeacherModal({
   const onSubmit = async (data: TeacherFormData) => {
     setLoading(true);
     try {
-      // Generate a 4-digit password with leading zeros (0001-9999)
-      const randomNum = Math.floor(Math.random() * 10000);
-      const defaultPassword = randomNum.toString().padStart(4, '0');
-
-      // Fetch existing emails to check for duplicates
-      const { data: existingTeachers } = await supabase
-        .from("teachers")
-        .select("email");
-      
-      const existingEmails = existingTeachers?.map(t => t.email).filter(Boolean) as string[] || [];
-      
-      // Generate school email using the utility function
-      const schoolEmail = generateSchoolEmail(data.name, existingEmails);
-
-      const { error } = await supabase.from("teachers").insert([
-        {
-          id: data.id,
-          name: data.name,
-          email: schoolEmail,
-          personal_email: data.personal_email || null,
-          nationality: data.nationality || null,
-          sex: data.sex || null,
-          contactNumber: data.contactNumber ? parseInt(data.contactNumber) : null,
-          subjectsTaught: data.subjectsTaught,
-          classesTaught: data.classesTaught || null,
-          photo_url: data.photo_url || null,
-          default_password: parseInt(defaultPassword),
-          password_hash: null,
-          is_verified: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ]);
+      const defaultPassword = "6667";
+      const { error } = await supabase.from("teachers").insert({
+        name: data.name, email: data.email,
+        nationality: data.nationality || null, sex: data.sex || null,
+        contactNumber: data.contactNumber ? Number(data.contactNumber) : null,
+        subjectsTaught: data.subjectsTaught, classesTaught: data.classesTaught || null,
+        photo_url: data.photo_url || null,
+      });
 
       if (error) throw error;
 
