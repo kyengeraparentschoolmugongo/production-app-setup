@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Lock school identity edits to administrators, save personal interests in settings/profile, and use blue default avatars; verify persistence and permissions.
+- [x] Lock school identity edits to administrators, save personal interests in settings/profile, and use blue default avatars; verified pupil persistence, admin assignment save, blocked pupil/direct browser writes, phone layout, and 22 rules tests.
 
 - [ ] Replace the voting subsystem with the uploaded repository, preserve its voting UI with school-blue colours, integrate existing portal accounts, and verify voting and administration.
 
