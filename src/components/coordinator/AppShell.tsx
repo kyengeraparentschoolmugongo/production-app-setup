@@ -4,6 +4,7 @@ import { ArrowLeft, Users, Vote, BarChart3, FileText, UserCircle2 } from "lucide
 import crest from "@/assets/class-crest.png.asset.json";
 import { SchoolAvatar } from "@/components/ui/school-avatar";
 import { usePageView, useUser } from "@/hooks/use-coordinator";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Crest({ className = "h-10 w-10" }: { className?: string }) {
   return <img src={crest.url} alt="Kyengera Parents School crest" className={`${className} rounded-full bg-background object-contain p-0.5 ring-2 ring-primary`} />;
@@ -18,6 +19,7 @@ const nav = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { user } = useUser();
+  const { photoUrl, userName } = useAuth();
   usePageView();
   return (
     <div className="election-shell mx-auto min-h-screen max-w-xl pb-28 bg-background text-foreground">
@@ -31,11 +33,11 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </Link>
         <Link
-          to={user ? "/status" : "/auth"}
+          to={user ? "/profile" : "/auth"}
           className="ml-auto flex h-10 w-10 items-center justify-center rounded-full border border-primary/40 text-foreground"
-          aria-label={user ? "My application" : "Sign in"}
+          aria-label={user ? "Open my profile" : "Sign in"}
         >
-          <UserCircle2 className="h-6 w-6" />
+          {user ? <CandidatePhoto name={userName} url={photoUrl} className="h-9 w-9 rounded-full" /> : <UserCircle2 className="h-6 w-6" />}
         </Link>
       </header>
       <main className="animate-page-in px-5">{children}</main>
