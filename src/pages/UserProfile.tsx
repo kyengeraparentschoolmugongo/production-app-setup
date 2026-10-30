@@ -4,7 +4,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { useNavigate } from "@/lib/router-compat";
 import { PersonalInfo } from "@/components/profile/PersonalInfoWithDatabase";
-import { DangerZone } from "@/components/profile/DangerZone";
 import { PhotoDialog } from "@/components/ui/photo-dialog";
 import { Button } from "@/components/ui/button";
 import { RecoverySettings } from "@/components/profile/RecoverySettings";
@@ -49,11 +48,6 @@ export default function UserProfile() {
 
         {/* Danger Zone - Editable Security Settings */}
         <RecoverySettings />
-        {userRole !== "student" && <DangerZone 
-          personalEmail={personalEmail}
-          userId={user?.id}
-          userRole={userRole}
-        />}
       </div>
     </DashboardLayout>
   );
