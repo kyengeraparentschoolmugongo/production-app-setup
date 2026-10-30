@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { verifyPupilLogin } from "@/lib/auth.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { GoogleSignIn } from "./GoogleSignIn";
+import { ForgotPasswordDialog } from "./ForgotPasswordDialog";
 import { school } from "@/lib/school";
 import { Checkbox } from "@/components/ui/checkbox";
 import { 
@@ -324,52 +325,7 @@ export function LoginForm({ schoolLogo }: LoginFormProps) {
           <GoogleSignIn />
           
           <div className="flex items-center justify-center">
-            <Dialog open={showPasswordRecovery} onOpenChange={setShowPasswordRecovery}>
-              <DialogTrigger asChild>
-                <Button variant="link" className="px-0 font-normal text-sm">
-                  Forgot Password?
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Reset Password</DialogTitle>
-                  <DialogDescription>
-                    Enter your email address and we'll send you a link to reset your password.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4 pt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="recovery-email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="recovery-email"
-                        type="email"
-                        placeholder="Enter your email address"
-                        value={recoveryEmail}
-                        onChange={(e) => setRecoveryEmail(e.target.value)}
-                        disabled={isRecovering}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={handlePasswordRecovery} 
-                    className="w-full"
-                    disabled={isRecovering}
-                  >
-                    {isRecovering ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      "Send Recovery Email"
-                    )}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <ForgotPasswordDialog />
           </div>
         </form>
       </CardContent>

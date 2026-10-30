@@ -12,6 +12,7 @@ interface PersonalInfoProps {
   userRole: string | null;
   userEmail: string | undefined;
   personalEmail: string | null;
+  userId?: string;
 }
 
 interface StudentData {
@@ -37,7 +38,7 @@ interface UserVerificationData {
   personal_email?: string;
 }
 
-export function PersonalInfo({ userName, userRole, userEmail, personalEmail }: PersonalInfoProps) {
+export function PersonalInfo({ userName, userRole, userEmail, personalEmail, userId }: PersonalInfoProps) {
   const { user } = useAuth();
   const [studentData, setStudentData] = useState<StudentData>({});
   const [teacherData, setTeacherData] = useState<TeacherData>({});
@@ -111,7 +112,7 @@ export function PersonalInfo({ userName, userRole, userEmail, personalEmail }: P
       const { data: student, error: studentError } = await supabase
         .from('students')
         .select('class_id, stream_id, name')
-        .eq('email', userEmail)
+        .eq('id', userId ?? '')
         .maybeSingle();
 
       console.log('Student query result:', { student, error: studentError });
