@@ -15,14 +15,16 @@ export const loginWithGoogle = createServerFn({ method: "POST" })
     // A Gmail linked in profile settings signs straight into that school account (any role).
     const { findAccountByLinkedGmail, portalLoginResult } = await import("./recovery.server");
     const linked = await findAccountByLinkedGmail(identity.email);
+    const { applyGoogleDefault } = await import("./profile-photo.server");
     if (linked) {
       await session.update({ role: linked.role, userId: linked.id, studentId: linked.role === "student" ? linked.id : undefined });
-      return { ...portalLoginResult(linked), created: false };
+      return { ...portalLoginResult(linked), photo_url: await applyGoogleDefault(linked.role, linked.id, linked.photo_url, identity.photoUrl ?? null), created: false };
     }
     const result = await resolveGoogleStudent(googleRepository, identity, data.password);
     if (result.status === "password-required") return { success: false as const, passwordRequired: true as const, email: result.email, message: "Enter your existing portal password to link Google." };
     await session.update({ role: "student", userId: result.student.id, studentId: result.student.id });
-    return { ...studentLoginResult(await readStudent(result.student.id)), created: result.created };
+    const student = await readStudent(result.student.id);
+    return { ...studentLoginResult(student), photo_url: await applyGoogleDefault("student", student.id, student.photo_url, identity.photoUrl ?? null), created: result.created };
   });
 
 export const getGoogleAccountSettings = createServerFn({ method: "GET" }).handler(async () => {

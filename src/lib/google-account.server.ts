@@ -2,6 +2,7 @@ import { getRequestHeader } from "@tanstack/react-start/server";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { verifyPupilPassword } from "./pupil-password";
 import type { GoogleAccountRepository, GoogleIdentity, PortalStudent } from "./google-account";
+import { trustedGooglePhoto } from "./photo-rules";
 
 export async function verifiedGoogleIdentity(): Promise<GoogleIdentity> {
   const header = getRequestHeader("authorization") ?? "";
@@ -12,7 +13,7 @@ export async function verifiedGoogleIdentity(): Promise<GoogleIdentity> {
   if (error || !data.user || !google || typeof email !== "string" || google.identity_data?.email_verified !== true) {
     throw new Error("A verified Google account is required.");
   }
-  return { id: data.user.id, email: email.trim().toLowerCase(), name: String(google.identity_data?.full_name ?? google.identity_data?.name ?? email.split("@")[0]).slice(0, 200) };
+  return { id: data.user.id, email: email.trim().toLowerCase(), name: String(google.identity_data?.full_name ?? google.identity_data?.name ?? email.split("@")[0]).slice(0, 200), photoUrl: trustedGooglePhoto(google.identity_data?.avatar_url ?? google.identity_data?.picture) };
 }
 
 export async function consumeAttempt(key: string) {
