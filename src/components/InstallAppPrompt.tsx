@@ -38,7 +38,7 @@ export function InstallAppPrompt() {
     <div role="dialog" aria-label="Install the school app" className="fixed inset-x-3 bottom-3 z-[60] mx-auto flex max-w-md items-center gap-3 rounded-xl border border-border bg-card p-3 text-card-foreground shadow-lg">
       <img src={classCrest.url} alt="" className="h-10 w-10 shrink-0 rounded-lg" />
       <div className="min-w-0 flex-1 text-sm">
-        <p className="font-semibold">Install KPS Mugongo app</p>
+        <p className="font-semibold">Install KPM App</p>
         {ios ? (
           <p className="text-muted-foreground">Tap <Share className="inline h-3.5 w-3.5" aria-label="Share" /> then “Add to Home Screen”.</p>
         ) : (
