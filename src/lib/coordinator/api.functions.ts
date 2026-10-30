@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { CLASSES, STREAMS, POSITIONS, youtubeId } from "./rules";
+import { applicationSchema } from "./application-schema";
 import { isCommission, canSubmitApplication } from "./access";
 
 const requestSchema = z.object({
@@ -9,18 +9,6 @@ const requestSchema = z.object({
   values: z.record(z.string(), z.unknown()).optional(),
   filters: z.array(z.object({ key: z.string(), value: z.unknown() })).default([]),
   single: z.boolean().default(false),
-});
-const applicationSchema = z.object({
-  student_name: z.string().trim().min(1).max(100),
-  class_name: z.string().refine(v => CLASSES.includes(v)),
-  stream_name: z.string().refine(v => STREAMS.includes(v)),
-  age: z.number().int().min(6).max(15).nullable().optional(),
-  position: z.string().refine(v => POSITIONS.some(p => p.value === v)),
-  experience: z.string().max(5000).nullable().optional(),
-  manifesto: z.string().max(10000).default(""),
-  photo_url: z.string().max(500000).nullable().optional(),
-  manifesto_photos: z.array(z.string().max(500000)).max(6).default([]),
-  youtube_url: z.string().nullable().optional().refine(v => !v || !!youtubeId(v)),
 });
 
 export const electionRequest = createServerFn({ method: "POST" })
@@ -91,20 +79,9 @@ export const electionRequest = createServerFn({ method: "POST" })
         if (current.user_id !== id) throw new Error("You cannot edit another pupil's application.");
       }
       if (!commission && !canSubmitApplication(role, settings.applications_open, current?.status)) throw new Error("Applications are closed or your application has already been reviewed.");
-      let values = data.values;
-      if (role === "student") {
-        const { data: pupil } = await db.from("students").select("name,photo_url,class_id,stream_id").eq("id", id).single();
-        const [c, s] = await Promise.all([
-          pupil?.class_id ? db.from("classes").select("name").eq("id", pupil.class_id).maybeSingle() : Promise.resolve({ data: null }),
-          pupil?.stream_id ? db.from("streams").select("name").eq("id", pupil.stream_id).maybeSingle() : Promise.resolve({ data: null }),
-        ]);
-        if (!pupil || !c.data?.name || !s.data?.name) throw new Error("Ask the school administrator to assign your class and stream before applying.");
-        values = { ...values, student_name: pupil.name, photo_url: pupil.photo_url, class_name: c.data.name, stream_name: s.data.name };
-      }
-      const app = applicationSchema.parse(values);
+      // Application choices are independent of the school profile; ownership remains session-derived.
+      const app = applicationSchema.parse(data.values);
       if (!app.student_name || !app.class_name || !app.position) throw new Error("Complete your candidate details.");
-      // A pupil cannot use the name selector to impersonate another registered pupil.
-      if (!commission && app.student_name.toLowerCase() !== account.name.toLowerCase()) throw new Error("Choose your own registered pupil name.");
       const row = { ...app, student_name: app.student_name, class_name: app.class_name, position: app.position, user_id: commission && data.action === "insert" ? null : id, status: commission && data.action === "insert" ? "approved" : "pending", updated_at: new Date().toISOString() };
       return data.action === "insert" ? db.from("coordinator_applications").insert(row) : db.from("coordinator_applications").update(row).eq("id", String(targetId));
     }
