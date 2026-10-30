@@ -1,9 +1,12 @@
 import { useSettings } from "@/hooks/use-coordinator";
 import { ClosedCard } from "@/components/coordinator/Notice";
 import { Link, useNavigate } from "@/lib/coordinator/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Check } from "lucide-react";
+import { Camera, ImagePlus, Loader2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { useServerFn } from "@tanstack/react-start";
 import { getSchoolProfile } from "@/lib/profile.functions";
 import { useQueryClient } from "@tanstack/react-query";
@@ -24,11 +27,14 @@ export default function ApplyPage() {
   const nav = useNavigate();
   const qc = useQueryClient();
   const readProfile = useServerFn(getSchoolProfile);
+  const cameraInput = useRef<HTMLInputElement>(null);
+  const galleryInput = useRef<HTMLInputElement>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
   const [existingId, setExistingId] = useState<string | null>(null);
   const [locked, setLocked] = useState(false);
-  const [f, setF] = useState({ student_name: name, class_name: "", stream_name: "", age: "", position: "", experience: "", manifesto: "", photo_url: "", youtube_url: "" });
+  const [f, setF] = useState({ student_name: "", class_name: "", stream_name: "", age: "", position: "", experience: "", manifesto: "", photo_url: "", youtube_url: "" });
   const [photos, setPhotos] = useState<string[]>([]);
   const set = (k: keyof typeof f, v: string) => setF((p) => ({ ...p, [k]: v }));
 
@@ -36,7 +42,7 @@ export default function ApplyPage() {
     if (!user) return;
     Promise.all([readProfile(), supabase.from("electoral_applications").select("*").eq("user_id", user.id).maybeSingle()]).then(([profile, { data }]) => {
       if (data) { setExistingId(data.id); setLocked(data.status !== "pending"); setPhotos(data.manifesto_photos); }
-      setF({ student_name: profile.name, class_name: profile.className === "Not assigned" ? "" : profile.className, stream_name: profile.streamName === "Not assigned" ? "" : profile.streamName, age: data?.age ? String(data.age) : "", position: data?.position ?? "", experience: data?.experience ?? "", manifesto: data?.manifesto ?? "", photo_url: profile.photoUrl ?? "", youtube_url: data?.youtube_url ?? "" });
+      setF({ student_name: data?.student_name ?? "", class_name: data?.class_name ?? "", stream_name: data?.stream_name ?? "", age: data?.age ? String(data.age) : "", position: data?.position ?? "", experience: data?.experience ?? "", manifesto: data?.manifesto ?? "", photo_url: data?.photo_url ?? "", youtube_url: data?.youtube_url ?? "" });
     }).catch(() => toast.error("Your school details could not be loaded."));
   }, [user]);
 
@@ -52,7 +58,7 @@ export default function ApplyPage() {
 
   const positions = positionsForClass(f.class_name);
   const canNext = [
-    f.student_name && f.class_name && f.stream_name,
+    PUPILS.includes(f.student_name) && CLASSES.includes(f.class_name) && STREAMS.includes(f.stream_name) && !photoBusy,
     f.position,
     true,
   ][step];
@@ -76,7 +82,14 @@ export default function ApplyPage() {
     nav({ to: "/status" });
   }
 
-  const input = "w-full rounded-xl border border-input bg-background/50 px-4 py-3 outline-none focus:border-primary";
+  async function uploadPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoBusy(true);
+    try { set("photo_url", await fileToSmallDataUrl(file)); }
+    catch { toast.error("This photo could not be opened. Please choose another image."); }
+    finally { setPhotoBusy(false); e.target.value = ""; }
+  }
 
   return (
     <AppShell>
@@ -94,20 +107,24 @@ export default function ApplyPage() {
         {step === 0 && (
           <>
             <div className="mx-auto flex w-fit flex-col items-center gap-2">
-              <div>
-                <CandidatePhoto name={f.student_name || "?"} url={f.photo_url || null} className="h-28 w-28 rounded-full ring-2 ring-primary" />
-              </div>
-              <span className="text-xs text-muted-foreground">School-managed photo</span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild><Button type="button" variant="ghost" disabled={photoBusy} aria-label="Choose application photo" title="Choose application photo" className="relative h-28 w-28 rounded-full p-0">
+                  <CandidatePhoto name={f.student_name || "Application photo"} url={f.photo_url || null} className="h-28 w-28 rounded-full ring-2 ring-primary" />
+                  <span className="absolute bottom-0 right-0 rounded-full bg-primary p-2 text-primary-foreground">{photoBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}</span>
+                </Button></DropdownMenuTrigger>
+                <DropdownMenuContent align="center">
+                  <DropdownMenuItem onSelect={() => cameraInput.current?.click()}><Camera className="mr-2 h-4 w-4" />Take a photo</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => galleryInput.current?.click()}><ImagePlus className="mr-2 h-4 w-4" />Choose from gallery</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <input ref={cameraInput} aria-label="Take application photo" type="file" accept="image/*" capture="user" className="hidden" onChange={uploadPhoto} />
+              <input ref={galleryInput} aria-label="Upload application photo" type="file" accept="image/*" className="hidden" onChange={uploadPhoto} />
             </div>
-            <input aria-label="Pupil name" className={input} disabled value={f.student_name} />
+            <div className="space-y-2"><Label>Pupil Name</Label><Select value={f.student_name} onValueChange={v => set("student_name", v)}><SelectTrigger aria-label="Pupil name" className="w-full"><SelectValue placeholder="Select name" /></SelectTrigger><SelectContent>{PUPILS.map(n => <SelectItem key={n} value={n}>{n}</SelectItem>)}</SelectContent></Select></div>
             <div className="grid grid-cols-2 gap-3">
-              <select aria-label="Class" className={input} disabled value={f.class_name}>
-                <option value="">Class</option>{CLASSES.map((c) => <option key={c}>{c}</option>)}
-              </select>
-              <select aria-label="Stream" className={input} disabled value={f.stream_name}>
-                <option value="">Stream</option>{STREAMS.map((s) => <option key={s}>{s}</option>)}
-              </select>
-              <select aria-label="Age" className={input} value={f.age} onChange={(e) => set("age", e.target.value)}><option value="">Age (optional)</option>{AGES.map(age => <option key={age}>{age}</option>)}</select>
+              <div className="min-w-0 space-y-2"><Label>Class</Label><Select value={f.class_name} onValueChange={v => { set("class_name", v); set("position", ""); }}><SelectTrigger aria-label="Class" className="w-full"><SelectValue placeholder="Select class" /></SelectTrigger><SelectContent>{CLASSES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select></div>
+              <div className="min-w-0 space-y-2"><Label>Stream</Label><Select value={f.stream_name} onValueChange={v => set("stream_name", v)}><SelectTrigger aria-label="Stream" className="w-full"><SelectValue placeholder="Select stream" /></SelectTrigger><SelectContent>{STREAMS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>
+              <div className="min-w-0 space-y-2"><Label>Age</Label><Select value={f.age || "none"} onValueChange={v => set("age", v === "none" ? "" : v)}><SelectTrigger aria-label="Age" className="w-full"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="none">Optional</SelectItem>{AGES.map(age => <SelectItem key={age} value={age}>{age}</SelectItem>)}</SelectContent></Select></div>
             </div>
           </>
         )}
@@ -115,19 +132,12 @@ export default function ApplyPage() {
           positions.length === 0 ? (
             <p className="text-muted-foreground">There are no coordinator positions open for {f.class_name}. Select a class from P1–P7.</p>
           ) : (
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground">Positions open for {f.class_name}: {positions.length}</p>
-              {positions.map((p) => (
-                <Button variant="ghost" key={p.value} onClick={() => set("position", p.value)} aria-pressed={f.position === p.value} className={`flex h-auto min-h-24 w-full items-start justify-start gap-3 whitespace-normal rounded-2xl border p-4 text-left ${f.position === p.value ? "border-primary bg-accent" : "border-primary/30"}`}>
-                  <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${f.position === p.value ? "border-primary bg-primary text-primary-foreground" : "border-primary/50"}`}>{f.position === p.value && <Check className="h-3 w-3" />}</div>
-                  <div className="min-w-0 flex-1 break-words"><p className="font-semibold">{p.label}</p><p className="mt-1 text-sm font-normal leading-relaxed text-muted-foreground">{p.description}</p></div>
-                </Button>
-              ))}
-            </div>
+            <div className="space-y-3"><Label>Position</Label><Select value={f.position} onValueChange={v => set("position", v)}><SelectTrigger aria-label="Position" className="w-full"><SelectValue placeholder="Select position" /></SelectTrigger><SelectContent>{positions.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}</SelectContent></Select>{f.position && <p className="text-sm text-muted-foreground">{positions.find(p => p.value === f.position)?.description}</p>}</div>
           )
         )}
         {step === 2 && (
           <div className="space-y-2 text-sm">
+            <CandidatePhoto name={f.student_name} url={f.photo_url || null} className="mx-auto mb-4 h-28 w-28 rounded-full" />
             <Row k="Name" v={f.student_name} /><Row k="Class" v={`${f.class_name} ${f.stream_name}`} /><Row k="Position" v={positionLabel(f.position)} />
           </div>
         )}
