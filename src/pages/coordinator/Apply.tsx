@@ -105,7 +105,7 @@ export default function ApplyPage() {
           <>
             <div className="mx-auto flex w-fit flex-col items-center gap-2">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild><Button type="button" variant="ghost" disabled={photoBusy} aria-label="Choose application photo" title="Choose application photo" className="relative h-28 w-28 rounded-full p-0">
+                <DropdownMenuTrigger asChild><Button type="button" variant="ghost" disabled={photoBusy} aria-label="Choose application photo" title="Choose application photo" className="relative h-28 w-28 rounded-full p-0 [&>div>svg]:h-3/5 [&>div>svg]:w-3/5">
                   <CandidatePhoto name={f.student_name || "Application photo"} url={f.photo_url || null} className="h-28 w-28 rounded-full ring-2 ring-primary" />
                   <span className="absolute bottom-0 right-0 rounded-full bg-primary p-2 text-primary-foreground">{photoBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}</span>
                 </Button></DropdownMenuTrigger>
