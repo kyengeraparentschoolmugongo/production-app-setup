@@ -24,6 +24,11 @@ export const adminUsersRequest = createServerFn({ method: "POST" })
     if (data.action === "select") return reply(table.select(columns));
     if (data.action === "delete") { if (!data.id || data.id === account.id) throw new Error("Choose another account."); return reply(table.delete().eq("id", data.id)); }
     let patch = fields.parse(data.values);
+    if (patch.photo_url?.includes("/object/sign/profile-photos/")) {
+      const url = new URL(patch.photo_url);
+      const objectPath = url.pathname.split("/object/sign/profile-photos/")[1];
+      if (objectPath) patch.photo_url = `profile-photos/${decodeURIComponent(objectPath)}`;
+    }
     if (data.table === "students" && (patch.class_id !== undefined || patch.stream_id !== undefined)) {
       const { data: current } = data.id ? await db.from("students").select("class_id,stream_id").eq("id", data.id).maybeSingle() : { data: null };
       const classId = patch.class_id === undefined ? current?.class_id : patch.class_id;
