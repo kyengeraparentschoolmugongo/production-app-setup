@@ -33,7 +33,13 @@ function GoogleCallback() {
     if (started.current) return;
     started.current = true;
     void (async () => {
-      const { data } = await supabase.auth.getSession();
+      // Direct (non-Lovable host) sign-in returns ?code=; exchange it if the client hasn't yet.
+      const code = new URLSearchParams(window.location.search).get("code");
+      let { data } = await supabase.auth.getSession();
+      if (!data.session && code) {
+        await supabase.auth.exchangeCodeForSession(code).catch(() => undefined);
+        ({ data } = await supabase.auth.getSession());
+      }
       if (!data.session) throw new Error("Google sign-in did not complete.");
       if (intent === "recovery-link") { const r = await linkGmail(); await supabase.auth.signOut(); toast.success(`Linked ${r.linkedGmail}.`); navigate("/profile", { replace: true }); return; }
       if (intent === "reset") { sessionStorage.setItem(GOOGLE_READY_KEY, "reset"); navigate("/login", { replace: true }); return; }
