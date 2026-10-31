@@ -519,6 +519,30 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_sessions: {
+        Row: {
+          account_type: string
+          expires_at: string
+          pending_link_until: string | null
+          token_hash: string
+          user_id: string
+        }
+        Insert: {
+          account_type: string
+          expires_at?: string
+          pending_link_until?: string | null
+          token_hash: string
+          user_id: string
+        }
+        Update: {
+          account_type?: string
+          expires_at?: string
+          pending_link_until?: string | null
+          token_hash?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       streams: {
         Row: {
           class_id: string | null
@@ -692,6 +716,17 @@ export type Database = {
       coordinator_record_view: {
         Args: { _candidate?: string }
         Returns: undefined
+      }
+      portal_account: { Args: { p_id: string; p_role: string }; Returns: Json }
+      portal_actor: { Args: never; Returns: Json }
+      portal_issue_session: {
+        Args: { p_id: string; p_role: string }
+        Returns: Json
+      }
+      portal_storage_access: { Args: { p_path: string }; Returns: boolean }
+      verify_portal_login: {
+        Args: { p_email: string; p_password: string }
+        Returns: Json
       }
     }
     Enums: {
