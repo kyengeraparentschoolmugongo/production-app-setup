@@ -22,10 +22,27 @@ export async function startGoogleSignIn({ redirectTo, params }: Options) {
     if (result.error) throw result.error;
     return { redirected: !!result.redirected };
   }
-  const { error } = await supabase.auth.signInWithOAuth({
+  const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo, queryParams: params },
+    options: { redirectTo, queryParams: params, skipBrowserRedirect: true },
   });
   if (error) throw error;
+  await assertProviderReady(data.url);
+  window.location.assign(data.url);
   return { redirected: true };
+}
+
+/**
+ * A misconfigured backend answers /authorize with a JSON 400 instead of redirecting
+ * to Google, which would strand the user on a raw error page. Probe first so we can
+ * show a readable message; a healthy provider responds with an (opaque) redirect.
+ */
+async function assertProviderReady(authorizeUrl: string) {
+  const probe = await fetch(authorizeUrl, { redirect: "manual" }).catch(() => null);
+  if (!probe || probe.type === "opaqueredirect" || probe.ok) return;
+  const body = (await probe.json().catch(() => null)) as { msg?: string } | null;
+  if (body?.msg?.toLowerCase().includes("oauth secret")) {
+    throw new Error("Google sign-in isn't set up for this website yet. Please sign in with your portal password, or ask the school administrator to enable Google sign-in.");
+  }
+  throw new Error(body?.msg || "Google sign-in is temporarily unavailable.");
 }
