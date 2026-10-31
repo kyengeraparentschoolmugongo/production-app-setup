@@ -22,6 +22,13 @@
       "when": 1793340887880,
       "tag": "0002_admin_profile_photo",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793410841849,
+      "tag": "0003_portable_portal_sessions",
+      "breakpoints": true
     }
   ]
 }
